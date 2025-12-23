@@ -35,9 +35,10 @@ BuildRequires:	pkgconfig(pd)
 BuildRequires:	pkgconfig(python)
 BuildRequires:	pkgconfig(sndfile)
 BuildRequires:	pkgconfig(samplerate)
-BuildRequires:	python3dist(numpy)
-BuildRequires:python3dist(setuptools)
-BuildRequires:	python3dist(sphinx)
+BuildRequires:	python%{pyver}dist(numpy)
+BuildRequires:  python%{pyver}dist(setuptools)
+BuildRequires:	python%{pyver}dist(sphinx)
+BuildRequires:  python%{pyver}dist(zombie-imp)
 Requires:	%{libname} = %{version}-%{release}
 
 %description
