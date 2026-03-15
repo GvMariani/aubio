@@ -1,0 +1,33 @@
+diff -rupN aubio-20251120.old/doc/requirements.rst aubio-20251120/doc/requirements.rst
+--- aubio-20251120.old/doc/requirements.rst	2026-03-15 16:37:19.620062800 +0100
++++ aubio-20251120/doc/requirements.rst	2026-03-15 17:51:22.532012918 +0100
+@@ -206,9 +206,6 @@ On all platforms, you will need to have
+ Linux
+ .....
+ 
+-The following `External libraries`_ will be used if found: `libav`_,
+-`libsamplerate`_, `libsndfile`_, `libfftw3`_.
+-
+ macOS
+ .....
+ 
+@@ -226,9 +223,6 @@ The following system frameworks will be
+   To build a fat binary for both ``i386`` and ``x86_64``, use ``./waf configure
+   --enable-fat``.
+ 
+-The following `External libraries`_ will also be checked: `libav`_,
+-`libsamplerate`_, `libsndfile`_, `libfftw3`_.
+-
+ To build a fat binary on a darwin like system (macOS, tvOS, appleOS, ...)
+ platforms, configure with ``--enable-fat``.
+ 
+@@ -244,9 +238,6 @@ for ``x86`` using ``msvc 12.0``, use:
+     waf configure --msvc_version='msvc 12.0' --msvc_target='x86'
+ 
+ 
+-The following `External libraries`_ will be used if found: `libav`_,
+-`libsamplerate`_, `libsndfile`_, `libfftw3`_.
+-
+ iOS
+ ...
+ 

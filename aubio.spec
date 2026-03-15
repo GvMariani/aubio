@@ -4,41 +4,48 @@
 %define	major 5
 %define	libname %mklibname %{name} %{major}
 %define	develname %mklibname %{name} -d
+%define	gitdate	20251120
 
 Summary:	A library for audio labelling
 Name:	aubio
-Version:	0.4.9
-Release:	8
+Version:	0.5.0
+Release:	0.%{gitdate}
 License:	GPLv2+
 Group:	Sound
 Url:		https://aubio.org/
-Source0:	https://aubio.org/pub/%{name}-%{version}.tar.bz2
-Patch0:	aubio-0.4.9-ffmpeg-5.0.patch
-Patch1:	aubio-python39.patch
-Patch2:	https://github.com/aubio/aubio/commit/cdfe9cef2dcc3edf7d05ca2e9c2dbbf8dea21f1c.patch
-Patch3:	aubio-0.4.9-ffmpeg-7.0.patch
-Patch4:	aubio-0.4.9-fix-python-shebangs.patch
-Patch5:	aubio-0.4.9-ffmpeg-8.0.patch
+# Use a git snapshot to pick up 4 years of updates
+#Source0:	https://aubio.org/pub/%%{name}-%%{version}.tar.bz2
+Source0:	%{name}-%{gitdate}.tar.xz
+Patch0:		aubio-0.5.0-drop-alpha-from-pc-file-version.patch
+Patch1:		aubio-0.5.0-fix-doc-building.patch
+Patch2:		aubio-0.5.0-fix-python-shebangs.patch
 BuildRequires:	docbook-to-man
 BuildRequires:	doxygen
 BuildRequires:	swig
 BuildRequires:	txt2man
+BuildRequires:	waf
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(fftw3)
+BuildRequires:	pkgconfig(flac)
 BuildRequires:	pkgconfig(jack)
 BuildRequires:	pkgconfig(libavcodec)
 BuildRequires:	pkgconfig(libavdevice)
 BuildRequires:	pkgconfig(libavformat)
 BuildRequires:	pkgconfig(libavutil)
 BuildRequires:	pkgconfig(liblash)
+BuildRequires:	pkgconfig(libswresample)
+BuildRequires:	pkgconfig(ogg)
 BuildRequires:	pkgconfig(pd)
 BuildRequires:	pkgconfig(python)
+BuildRequires:	pkgconfig(rubberband)
 BuildRequires:	pkgconfig(sndfile)
 BuildRequires:	pkgconfig(samplerate)
+BuildRequires:	pkgconfig(vorbis)
+BuildRequires:	pkgconfig(vorbisenc)
 BuildRequires:	python%{pyver}dist(numpy)
-BuildRequires:  python%{pyver}dist(setuptools)
+BuildRequires:	python%{pyver}dist(setuptools)
 BuildRequires:	python%{pyver}dist(sphinx)
-BuildRequires:  python%{pyver}dist(zombie-imp)
+BuildRequires:	python%{pyver}dist(wheel)
 Requires:	%{libname} = %{version}-%{release}
 
 %description
@@ -49,8 +56,10 @@ with a typo:  several transcription errors are likely to be found in the
 results too.
 
 %files
+%doc ChangeLog README.md
+%license COPYING
 %doc %{_docdir}/libaubio-doc
-%{_bindir}/aubio*
+%{_bindir}/%{name}*
 %{_mandir}/man1/%{name}*
 
 #-----------------------------------------------------------------------------
@@ -100,20 +109,20 @@ Python bindings for %{name}.
 #-----------------------------------------------------------------------------
 
 %prep
-%autosetup -p1
+%autosetup -p1 -n %{name}-%{gitdate}
 
 
 %build
 %set_build_flags
-./waf configure --prefix=%{_prefix} --libdir=%{_libdir}
-./waf build -v
+waf configure --prefix=%{_prefix} --libdir=%{_libdir} --enable-fftw3
+%waf  -v
 
 # For the python bindings
 %py_build
 
 
 %install
-./waf install --destdir=%{buildroot}
+%waf_install
 
 # For the python bindings
 %py_install
@@ -122,6 +131,6 @@ Python bindings for %{name}.
 chmod +x %{buildroot}%{py_platsitedir}/%{name}/{__init__,cmd,cut}.py
 
 # We don't want these
-rm %{buildroot}/%{_libdir}/libaubio.a
-#find %%{buildroot} -name '*.la' -delete
+rm -f %{buildroot}/%{_libdir}/libaubio.a
 rm -f %{buildroot}%{_docdir}/libaubio-doc/manual/.buildinfo
+
